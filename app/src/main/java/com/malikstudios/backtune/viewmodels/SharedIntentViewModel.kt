@@ -3,6 +3,7 @@ package com.malikstudios.backtune.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.malikstudios.backtune.utils.RemoteConfigManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,19 +32,19 @@ class SharedIntentViewModel @Inject constructor() : ViewModel() {
         _sharedVideoId.value = null
     }
 
-//    init {
-//        fetchRemoteConfigValues()
-//    }
-//
-//    private fun fetchRemoteConfigValues() {
-//        viewModelScope.launch {
-//            val success = RemoteConfigManager.fetchAndActivate()
-//            val url1 = RemoteConfigManager.getCreatorImageUrl()
-//            val url2 = RemoteConfigManager.getAppSharableURl()
-//            Log.d("testAyan", "fetchProfileImage: $url1, $url2")
-//
-//            _creatorImageUrl.value = url1.ifBlank { "https://example.com/default-profile.png" }
-//            _appShareableURL.value = url2.ifBlank { "" }
-//        }
-//    }
+    init {
+        fetchRemoteConfigValues()
+    }
+
+    private fun fetchRemoteConfigValues() {
+        viewModelScope.launch {
+            val success = RemoteConfigManager.fetchAndActivate()
+            val url1 = RemoteConfigManager.getCreatorImageUrl()
+            val url2 = RemoteConfigManager.getAppSharableURl()
+            Log.d("testAyan", "fetchProfileImage: $url1, $url2")
+
+            _creatorImageUrl.value = url1.ifBlank { "https://example.com/default-profile.png" }
+            _appShareableURL.value = url2.ifBlank { "" }
+        }
+    }
 }
