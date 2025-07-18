@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1066912281751",
+    "project_id": "malik-studio-apps",
+    "storage_bucket": "malik-studio-apps.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1066912281751:android:e28dd72745b52cc48125d2",
+        "android_client_info": {
+          "package_name": "com.malikstudios.backtune"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDV1PXxWn6q2BZEkvwGdEALp1U6QH3BSxs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
