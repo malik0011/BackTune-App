@@ -49,40 +49,42 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             BackTuneTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val navController = rememberNavController()
+                Scaffold {  paddingValues ->
+                    Surface(
+                        modifier = Modifier.padding(paddingValues).fillMaxSize(),
+                        color = MaterialTheme.colorScheme.background
+                    ) {
+                        val navController = rememberNavController()
 
-                    // ✅ Request notification permission (required from Android 13+)
-                    PermissionHandler.RequestNotificationPermission(
-                        activity = this,
-                        onPermissionResult = { isGranted ->
-                            Log.d(TAG, "Notification permission result: $isGranted")
+                        // ✅ Request notification permission (required from Android 13+)
+                        PermissionHandler.RequestNotificationPermission(
+                            activity = this,
+                            onPermissionResult = { isGranted ->
+                                Log.d(TAG, "Notification permission result: $isGranted")
 
-                            if (isGranted) {
-                                // ✅ Initialize Firebase Messaging and get the token
-                                FirebaseMessaging.getInstance().token
-                                    .addOnCompleteListener { task ->
-                                        if (task.isSuccessful) {
-                                            val token = task.result
-                                            Log.d(TAG, "FCM Token: $token")
-                                        } else {
-                                            Log.d(TAG, "Fetching FCM token failed")
+                                if (isGranted) {
+                                    // ✅ Initialize Firebase Messaging and get the token
+                                    FirebaseMessaging.getInstance().token
+                                        .addOnCompleteListener { task ->
+                                            if (task.isSuccessful) {
+                                                val token = task.result
+                                                Log.d(TAG, "FCM Token: $token")
+                                            } else {
+                                                Log.d(TAG, "Fetching FCM token failed")
+                                            }
                                         }
-                                    }
-                            } else {
-                                Log.d(TAG, "Notification permission was not granted.")
+                                } else {
+                                    Log.d(TAG, "Notification permission was not granted.")
+                                }
                             }
-                        }
-                    )
+                        )
 
-                    // 🔁 Navigation
-                    AppNavigation(
-                        navController = navController,
-                        sharedIntentViewModel = sharedIntentViewModel
-                    )
+                        // 🔁 Navigation
+                        AppNavigation(
+                            navController = navController,
+                            sharedIntentViewModel = sharedIntentViewModel
+                        )
+                    }
                 }
             }
         }
