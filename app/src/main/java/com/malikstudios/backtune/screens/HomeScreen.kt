@@ -2,6 +2,7 @@ package com.malikstudios.backtune.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -66,7 +67,9 @@ fun HomeScreen(
                 style = MaterialTheme.typography.bodyLarge,
                 color = BackTuneColors.TextSecondary,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = 8.dp).clickable {
+                    throw RuntimeException("Test Crash") // Force a crash
+                }
             )
         }
         
