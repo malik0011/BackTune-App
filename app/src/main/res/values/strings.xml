@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BackTune</string>
+
+    <!-- Home Screen -->
+    <string name="home_title">Welcome to BackTune</string>
+    <string name="home_subtitle">Enhance your YouTube experience with ambient sounds</string>
+    <string name="youtube_url_hint">Paste YouTube video URL here</string>
+    <string name="play_button">Play Video</string>
+
+    <!-- Player Screen -->
+    <string name="player_title">Now Playing</string>
+    <string name="background_sound">Background Sound</string>
+    <string name="volume_control">Volume Control</string>
+
+    <!-- Sound Selection -->
+    <string name="sound_selection_title">Choose Ambient Sound</string>
+    <string name="select_sound">Select</string>
+
+    <!-- Common -->
+    <string name="error_invalid_url">Please enter a valid YouTube URL</string>
+    <string name="error_loading">Error loading content</string>
+
+    <!-- Tips -->
+    <string name="tips_title">Tips for Best Experience</string>
+    <string name="tip_headphones">Use headphones for the best audio experience</string>
+    <string name="tip_volume">Adjust background sound volume to your preference</string>
+    <string name="tip_mix">Try different sounds to find your perfect mix</string>
+    <string name="about_backTune">About BackTune</string>
+    <string name="about_description">BackTune is an app that allows you to play YouTube videos with ambient sounds in the background, enhancing your listening experience.</string>
+
+    <string name="feature_ambient_sounds">Add ambient sounds to YouTube videos</string>
+    <string name="feature_volume_control">Customize background sound volume</string>
+    <string name="feature_multiple_sounds">Multiple ambient sound options</string>
+    <string name="feature_easy_sharing">Easy sharing from YouTube app</string>
+
+    <!-- Feedback -->
+    <string name="feedback_title">Feedback</string>
+    <string name="feedback_prompt">We would love to hear your thoughts!</string>
+    <string name="contact_me">Contact Me</string>
+    <string name="share_app">Share BackTune</string>
+    <string name="how_to_use">How to Use</string>
+</resources>
