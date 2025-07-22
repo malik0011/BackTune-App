@@ -37,21 +37,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-//        //TODO: need move it to .properties class to ignore git and access it from build
-//        val apiKey = BuildConfig.MY_SECRET_API_KEY
-//        Log.d(TAG, "onCreate: Starting MainActivity $apiKey")
-//
-//        if (apiKey.isNotEmpty()) {
-//            OneSignal.initWithContext(this, apiKey)
-//        }
-
         handleIntent(intent)
+        handleNotificationData(intent)
 
         setContent {
             BackTuneTheme {
                 Scaffold {  paddingValues ->
                     Surface(
-                        modifier = Modifier.padding(paddingValues).fillMaxSize(),
+                        modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
                         val navController = rememberNavController()
@@ -81,6 +74,7 @@ class MainActivity : ComponentActivity() {
 
                         // 🔁 Navigation
                         AppNavigation(
+                            paddingValues = paddingValues,
                             navController = navController,
                             sharedIntentViewModel = sharedIntentViewModel
                         )
@@ -94,10 +88,12 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(intent)
         Log.d(TAG, "onNewIntent:  $intent")
         handleIntent(intent)
+        handleNotificationData(intent)
     }
 
     // 🔗 Handle YouTube link from notification or share intent
     private fun handleIntent(intent: Intent?) {
+        Log.d(TAG, "handleIntent: $intent")
         if (intent?.action == Intent.ACTION_SEND && intent.type == "text/plain") {
             val sharedText = intent.getStringExtra(Intent.EXTRA_TEXT)
             if (sharedText != null && isValidYouTubeUrl(sharedText)) {
@@ -108,6 +104,30 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    private fun handleNotificationData(intent: Intent?) {
+        if (intent == null) return
+
+        val extras = intent.extras
+        val ytLink = extras?.getString("yt_link")
+
+        if (!ytLink.isNullOrBlank()) {
+            Log.d(TAG, "handleNotificationData: yt_link from notification = $ytLink")
+
+            if (isValidYouTubeUrl(ytLink)) {
+                val videoId = extractVideoId(ytLink)
+                if (videoId != null) {
+                    sharedIntentViewModel.setSharedVideoId(videoId)
+                }
+            } else {
+                Log.d(TAG, "handleNotificationData: Invalid YouTube link.")
+            }
+        } else {
+            Log.d(TAG, "handleNotificationData: No yt_link found in intent extras.")
+        }
+    }
+
+
 
     // ✅ YouTube link validation (non-shorts only)
     private fun isValidYouTubeUrl(url: String): Boolean {

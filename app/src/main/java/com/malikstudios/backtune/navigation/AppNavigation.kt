@@ -1,5 +1,6 @@
 package com.malikstudios.backtune.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -34,6 +35,7 @@ sealed class Screen(val route: String) {
  */
 @Composable
 fun AppNavigation(
+    paddingValues: PaddingValues,
     navController: NavHostController = rememberNavController(),
     sharedIntentViewModel: SharedIntentViewModel = hiltViewModel()
 ) {
@@ -47,6 +49,7 @@ fun AppNavigation(
     ) {
         composable(Screen.Home.route) {
             HomeScreen(
+                paddingValues = paddingValues,
                 onNavigateToPlayer = { videoId ->
                     navController.navigate(Screen.Player.createRoute(videoId))
                 },

@@ -2,6 +2,7 @@ package com.malikstudios.backtune.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,6 +33,7 @@ import com.malikstudios.backtune.utils.Constants
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    paddingValues: PaddingValues,
     onNavigateToPlayer: (String) -> Unit,
     onNavigateToAbout: () -> Unit
 ) {
@@ -42,7 +44,9 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(BackTuneColors.Background)
-            .padding(16.dp),
+            .padding(16.dp)
+            .padding(paddingValues)
+        ,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Logo and Title Section
@@ -66,7 +70,9 @@ fun HomeScreen(
                 style = MaterialTheme.typography.bodyLarge,
                 color = BackTuneColors.TextSecondary,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = 8.dp).clickable {
+                    throw RuntimeException("Test Crash") // Force a crash
+                }
             )
         }
         
@@ -200,6 +206,7 @@ private fun extractVideoId(url: String): String? {
 fun HomeScreenPreview() {
     BackTuneTheme {
         HomeScreen(
+            paddingValues = PaddingValues(16.dp),
             onNavigateToPlayer = {},
             onNavigateToAbout = {}
         )

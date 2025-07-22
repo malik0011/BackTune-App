@@ -87,7 +87,7 @@ fun PlayerScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(top = 0.dp, start = 0.dp, end = 0.dp, bottom = 16.dp)
             .background(BackTuneColors.Background)
     ) {
         // Top Bar
@@ -114,207 +114,222 @@ fun PlayerScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // YouTube Player
-        AndroidView(
-            factory = { context ->
-                YouTubePlayerView(context).apply {
-                    layoutParams = FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT
-                    )
-                    addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
-                        override fun onReady(player: YouTubePlayer) {
-                            youTubePlayer = player
-                            player.loadVideo(videoId, currentPlayerPosition)
-                        }
-
-                        override fun onCurrentSecond(youTubePlayer: YouTubePlayer, second: Float) {
-                            super.onCurrentSecond(youTubePlayer, second)
-                            currentPlayerPosition = second
-                        }
-
-                        override fun onStateChange(youTubePlayer: YouTubePlayer, state: PlayerConstants.PlayerState) {
-                            super.onStateChange(youTubePlayer, state)
-                            when (state) {
-                                PlayerConstants.PlayerState.ENDED -> {
-                                    // Stop background music when video ends
-                                    viewModel.toggleBackgroundPlayback()
-                                }
-                                PlayerConstants.PlayerState.PAUSED -> {
-                                    // Pause background music when video is paused
-                                    if (viewModel.isBackgroundPlaying.value) {
-                                        viewModel.toggleBackgroundPlayback()
-                                    }
-                                }
-                                PlayerConstants.PlayerState.PLAYING -> {
-                                    // Resume background music when video starts playing
-                                    if (!viewModel.isBackgroundPlaying.value && viewModel.selectedSound.value != null) {
-                                        viewModel.toggleBackgroundPlayback()
-                                    }
-                                }
-                                else -> {}
-                            }
-                        }
-                    })
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(240.dp)
-                .clip(RoundedCornerShape(16.dp))
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Background Sound Controls
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .clip(RoundedCornerShape(16.dp)),
-            colors = CardDefaults.cardColors(
-                containerColor = BackTuneColors.CardBackground
-            )
+        Column (modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.background_sound),
-                        style = MaterialTheme.typography.titleMedium,
-                        color = BackTuneColors.TextPrimary
-                    )
-                    
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        if (selectedSound != null) {
-                            IconButton(
-                                onClick = { viewModel.toggleBackgroundPlayback() }
+            // YouTube Player
+            AndroidView(
+                factory = { context ->
+                    YouTubePlayerView(context).apply {
+                        layoutParams = FrameLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                        )
+                        addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+                            override fun onReady(player: YouTubePlayer) {
+                                youTubePlayer = player
+                                player.loadVideo(videoId, currentPlayerPosition)
+                            }
+
+                            override fun onCurrentSecond(
+                                youTubePlayer: YouTubePlayer,
+                                second: Float
                             ) {
-                                Icon(
-                                    painter = painterResource(id =
-                                    if (isBackgroundPlaying)
-                                        R.drawable.ic_pause
-                                    else
-                                        R.drawable.ic_play
-                                    ),
-                                    contentDescription = if (isBackgroundPlaying) 
-                                        "Pause Background" 
-                                    else 
-                                        "Play Background",
-                                    tint = BackTuneColors.Primary
-                                )
+                                super.onCurrentSecond(youTubePlayer, second)
+                                currentPlayerPosition = second
                             }
-                        }
-                        
-                        Button(
-                            onClick = { viewModel.showSoundSelection() },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = BackTuneColors.Primary
-                            ),
-                            enabled = !isLoading
-                        ) {
-                            if (isLoading) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(24.dp),
-                                    color = BackTuneColors.TextPrimary
-                                )
-                            } else {
-                                Text(stringResource(R.string.select_sound))
+
+                            override fun onStateChange(
+                                youTubePlayer: YouTubePlayer,
+                                state: PlayerConstants.PlayerState
+                            ) {
+                                super.onStateChange(youTubePlayer, state)
+                                when (state) {
+                                    PlayerConstants.PlayerState.ENDED -> {
+                                        // Stop background music when video ends
+                                        viewModel.toggleBackgroundPlayback()
+                                    }
+
+                                    PlayerConstants.PlayerState.PAUSED -> {
+                                        // Pause background music when video is paused
+                                        if (viewModel.isBackgroundPlaying.value) {
+                                            viewModel.toggleBackgroundPlayback()
+                                        }
+                                    }
+
+                                    PlayerConstants.PlayerState.PLAYING -> {
+                                        // Resume background music when video starts playing
+                                        if (!viewModel.isBackgroundPlaying.value && viewModel.selectedSound.value != null) {
+                                            viewModel.toggleBackgroundPlayback()
+                                        }
+                                    }
+
+                                    else -> {}
+                                }
                             }
-                        }
+                        })
                     }
-                }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(240.dp)
+                    .clip(RoundedCornerShape(16.dp))
+            )
 
-                if (selectedSound != null) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = selectedSound?.name?: "",
-                        color = BackTuneColors.TextSecondary
-                    )
-                    
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_volume_down),
-                            contentDescription = "Volume",
-                            tint = BackTuneColors.TextSecondary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Slider(
-                            value = volume,
-                            onValueChange = { viewModel.updateVolume(it) },
-                            colors = SliderDefaults.colors(
-                                thumbColor = BackTuneColors.Primary,
-                                activeTrackColor = BackTuneColors.Primary,
-                                inactiveTrackColor = BackTuneColors.TextTertiary
-                            ),
-                            modifier = Modifier.weight(1f)
-                        )
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_volume_up),
-                            contentDescription = "Volume",
-                            tint = BackTuneColors.TextSecondary,
-                            modifier = Modifier.size(20.dp)
-                        )
-                    }
-                    Text(
-                        text = "Background Music Volume",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = BackTuneColors.TextSecondary,
-                        modifier = Modifier.padding(start = 4.dp)
-                    )
-                }
-            }
-        }
+            Spacer(modifier = Modifier.height(24.dp))
 
-        // Sound Selection Bottom Sheet
-        if (isSoundSelectionVisible) {
-            ModalBottomSheet(
-                onDismissRequest = { viewModel.hideSoundSelection() },
-                containerColor = BackTuneColors.Surface
+            // Background Sound Controls
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+                colors = CardDefaults.cardColors(
+                    containerColor = BackTuneColors.CardBackground
+                )
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+                    modifier = Modifier.padding(16.dp)
                 ) {
-                    Text(
-                        text = stringResource(R.string.sound_selection_title),
-                        style = MaterialTheme.typography.titleLarge,
-                        color = BackTuneColors.TextPrimary
-                    )
-                    
-                    Spacer(modifier = Modifier.height(16.dp))
-                    
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        items(viewModel.availableSounds) { sound ->
-                            SoundItem(
-                                sound = sound,
-                                isSelected = sound.id == selectedSound?.id,
-                                onSelect = { viewModel.selectSound(sound) }
+                        Text(
+                            text = stringResource(R.string.background_sound),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = BackTuneColors.TextPrimary
+                        )
+
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            if (selectedSound != null) {
+                                IconButton(
+                                    onClick = { viewModel.toggleBackgroundPlayback() }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(
+                                            id =
+                                                if (isBackgroundPlaying)
+                                                    R.drawable.ic_pause
+                                                else
+                                                    R.drawable.ic_play
+                                        ),
+                                        contentDescription = if (isBackgroundPlaying)
+                                            "Pause Background"
+                                        else
+                                            "Play Background",
+                                        tint = BackTuneColors.Primary
+                                    )
+                                }
+                            }
+
+                            Button(
+                                onClick = { viewModel.showSoundSelection() },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = BackTuneColors.Primary
+                                ),
+                                enabled = !isLoading
+                            ) {
+                                if (isLoading) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(24.dp),
+                                        color = BackTuneColors.TextPrimary
+                                    )
+                                } else {
+                                    Text(stringResource(R.string.select_sound))
+                                }
+                            }
+                        }
+                    }
+
+                    if (selectedSound != null) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = selectedSound?.name ?: "",
+                            color = BackTuneColors.TextSecondary
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_volume_down),
+                                contentDescription = "Volume",
+                                tint = BackTuneColors.TextSecondary,
+                                modifier = Modifier.size(20.dp)
                             )
+                            Slider(
+                                value = volume,
+                                onValueChange = { viewModel.updateVolume(it) },
+                                colors = SliderDefaults.colors(
+                                    thumbColor = BackTuneColors.Primary,
+                                    activeTrackColor = BackTuneColors.Primary,
+                                    inactiveTrackColor = BackTuneColors.TextTertiary
+                                ),
+                                modifier = Modifier.weight(1f)
+                            )
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_volume_up),
+                                contentDescription = "Volume",
+                                tint = BackTuneColors.TextSecondary,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                        Text(
+                            text = "Background Music Volume",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = BackTuneColors.TextSecondary,
+                            modifier = Modifier.padding(start = 4.dp)
+                        )
+                    }
+                }
+            }
+
+            // Sound Selection Bottom Sheet
+            if (isSoundSelectionVisible) {
+                ModalBottomSheet(
+                    onDismissRequest = { viewModel.hideSoundSelection() },
+                    containerColor = BackTuneColors.Surface
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.sound_selection_title),
+                            style = MaterialTheme.typography.titleLarge,
+                            color = BackTuneColors.TextPrimary
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            items(viewModel.availableSounds) { sound ->
+                                SoundItem(
+                                    sound = sound,
+                                    isSelected = sound.id == selectedSound?.id,
+                                    onSelect = { viewModel.selectSound(sound) }
+                                )
+                            }
                         }
                     }
                 }
             }
-        }
 
-        // Add the tips card at the bottom
-        Spacer(modifier = Modifier.weight(1f))
-        UserTipsCard()
+            // Add the tips card at the bottom
+            Spacer(modifier = Modifier.weight(1f))
+            UserTipsCard()
+        }
     }
 }
 

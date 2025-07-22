@@ -22,10 +22,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.malikstudios.backtune" />
+                  <option name="mobileSdkAppId" value="1:1066912281751:android:e28dd72745b52cc48125d2" />
+                  <option name="projectId" value="malik-studio-apps" />
+                  <option name="projectNumber" value="1066912281751" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
