@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
             BackTuneTheme {
                 Scaffold {  paddingValues ->
                     Surface(
-                        modifier = Modifier.padding(paddingValues).fillMaxSize(),
+                        modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
                         val navController = rememberNavController()
@@ -74,6 +74,7 @@ class MainActivity : ComponentActivity() {
 
                         // 🔁 Navigation
                         AppNavigation(
+                            paddingValues = paddingValues,
                             navController = navController,
                             sharedIntentViewModel = sharedIntentViewModel
                         )

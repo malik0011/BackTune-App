@@ -33,6 +33,7 @@ import com.malikstudios.backtune.utils.Constants
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    paddingValues: PaddingValues,
     onNavigateToPlayer: (String) -> Unit,
     onNavigateToAbout: () -> Unit
 ) {
@@ -43,7 +44,9 @@ fun HomeScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(BackTuneColors.Background)
-            .padding(16.dp),
+            .padding(16.dp)
+            .padding(paddingValues)
+        ,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Logo and Title Section
@@ -203,6 +206,7 @@ private fun extractVideoId(url: String): String? {
 fun HomeScreenPreview() {
     BackTuneTheme {
         HomeScreen(
+            paddingValues = PaddingValues(16.dp),
             onNavigateToPlayer = {},
             onNavigateToAbout = {}
         )
