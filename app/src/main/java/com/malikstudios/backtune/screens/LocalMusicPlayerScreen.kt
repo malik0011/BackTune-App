@@ -2,11 +2,8 @@ package com.malikstudios.backtune.screens
 
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,11 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -47,20 +42,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.malikstudios.backtune.R
-import com.malikstudios.backtune.models.AmbientSound
 import com.malikstudios.backtune.ui.theme.BackTuneColors
-import com.malikstudios.backtune.ui.theme.BackTuneTheme
 import com.malikstudios.backtune.viewmodels.MainViewModel
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
@@ -69,7 +58,7 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlayerScreen(
+fun LocalMusicPlayerScreen(
     videoId: String,
     onNavigateBack: () -> Unit,
     viewModel: MainViewModel = hiltViewModel()
@@ -80,7 +69,7 @@ fun PlayerScreen(
     val isBackgroundPlaying by viewModel.isBackgroundPlaying.collectAsState()
     val isSoundSelectionVisible by viewModel.isSoundSelectionVisible.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
-    
+
     var youTubePlayer by remember { mutableStateOf<YouTubePlayer?>(null) }
     var currentPlayerPosition by remember { mutableStateOf<Float>(0f) }
 
@@ -328,90 +317,13 @@ fun PlayerScreen(
 
             // Add the tips card at the bottom
             Spacer(modifier = Modifier.weight(1f))
-            UserTipsCard()
+            LocalMusicPlayerUserTipsCard()
         }
     }
 }
 
 @Composable
-fun SoundItem(
-    sound: AmbientSound,
-    isSelected: Boolean,
-    onSelect: () -> Unit
-) {
-    val icon = when (sound.id) {
-        "rain" -> R.drawable.ic_rain
-        "long_rain" -> R.drawable.ic_long_rain
-        "waves" -> R.drawable.ic_waves
-        "forest" -> R.drawable.ic_forest
-        else -> R.drawable.ic_music
-    }
-
-    val backgroundColor = if (isSelected) {
-        BackTuneColors.Primary.copy(alpha = 0.1f)
-    } else {
-        BackTuneColors.CardBackground
-    }
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onSelect),
-        colors = CardDefaults.cardColors(
-            containerColor = backgroundColor
-        ),
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            // Icon Container
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(CircleShape)
-                    .background(
-                        if (isSelected) BackTuneColors.Primary
-                        else BackTuneColors.Primary.copy(alpha = 0.1f)
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(id = icon),
-                    contentDescription = sound.name,
-                    colorFilter = ColorFilter.tint(if (isSelected) Color.White else BackTuneColors.Primary),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            // Sound Info
-            Text(
-                text = sound.name,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Medium
-                ),
-                color = BackTuneColors.TextPrimary
-            )
-
-            // Selection Indicator
-            if (isSelected) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = "Selected",
-                    tint = BackTuneColors.Primary,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun UserTipsCard() {
+private fun LocalMusicPlayerUserTipsCard() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -439,9 +351,9 @@ private fun UserTipsCard() {
                     color = BackTuneColors.TextPrimary
                 )
             }
-            
+
             Spacer(modifier = Modifier.height(8.dp))
-            
+
             // Tip items
             TipItem(
                 icon = R.drawable.ic_headphone,
@@ -458,40 +370,3 @@ private fun UserTipsCard() {
         }
     }
 }
-
-@Composable
-fun TipItem(
-    icon: Int,
-    text: String
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Image(
-            painter = painterResource(id = icon),
-            contentDescription = null,
-            colorFilter = ColorFilter.tint(BackTuneColors.TextSecondary),
-            modifier = Modifier.size(20.dp)
-        )
-        Text(
-            text = text,
-            style = MaterialTheme.typography.bodyMedium,
-            color = BackTuneColors.TextSecondary
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PlayerScreenPreview() {
-    BackTuneTheme {
-        PlayerScreen(
-            videoId = "dQw4w9WgXcQ",
-            onNavigateBack = {}
-        )
-    }
-} 
