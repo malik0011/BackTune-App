@@ -30,6 +30,9 @@ class MainViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    private val _isBlubOn = MutableStateFlow(true)
+    val isBlubOn: StateFlow<Boolean> = _isBlubOn
+
     // Available sounds - make sure these match your raw resource names exactly
     val availableSounds = listOf(
         AmbientSound("rain", "Rain", "rain_sound"), // Update to match your actual resource name
@@ -73,5 +76,9 @@ class MainViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         soundService.release()
+    }
+
+    fun toggleBlubIcon() {
+        _isBlubOn.value = !_isBlubOn.value
     }
 } 

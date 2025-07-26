@@ -7,6 +7,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,12 +23,12 @@ import com.malikstudios.backtune.viewmodels.SharedIntentViewModel
  * Navigation routes for the app
  */
 sealed class Screen(val route: String) {
-    object Home : Screen("home")
-    object Player : Screen("player/{videoId}") {
+    data object Home : Screen("home")
+    data object Player : Screen("player/{videoId}") {
         fun createRoute(videoId: String) = "player/$videoId"
     }
-    object SoundSelection : Screen("sound_selection")
-    object About : Screen("about")
+    data object SoundSelection : Screen("sound_selection")
+    data object About : Screen("about")
 }
 
 /**
@@ -61,12 +62,31 @@ fun AppNavigation(
 
         composable(Screen.Player.route) { backStackEntry ->
             val videoId = backStackEntry.arguments?.getString("videoId")
+            val viewModel: MainViewModel = hiltViewModel()
+            val selectedSound by viewModel.selectedSound.collectAsStateWithLifecycle()
+            val volume by viewModel.volume.collectAsStateWithLifecycle()
+            val isBackgroundPlaying by viewModel.isBackgroundPlaying.collectAsStateWithLifecycle()
+            val isSoundSelectionVisible by viewModel.isSoundSelectionVisible.collectAsStateWithLifecycle()
+            val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+            val isBlubOn by viewModel.isBlubOn.collectAsStateWithLifecycle()
+
             if (videoId != null) {
                 PlayerScreen(
                     videoId = videoId,
-                    onNavigateBack = {
-                        navController.popBackStack()
-                    }
+                    onNavigateBack = { navController.popBackStack() },
+                    selectedSound = selectedSound,
+                    volume = volume,
+                    isBackgroundPlaying = isBackgroundPlaying,
+                    isSoundSelectionVisible = isSoundSelectionVisible,
+                    isLoading = isLoading,
+                    isBlubOn = isBlubOn,
+                    availableSounds = viewModel.availableSounds,
+                    toggleBackgroundPlayback = { viewModel.toggleBackgroundPlayback() },
+                    showSoundSelection = { viewModel.showSoundSelection() },
+                    updateVolume = { newVolume -> viewModel.updateVolume(newVolume) },
+                    hideSoundSelection = { viewModel.hideSoundSelection() },
+                    selectSound = { sound -> viewModel.selectSound(sound) },
+                    toggleBlubIcon = { viewModel.toggleBlubIcon() }
                 )
             }
         }
