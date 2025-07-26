@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.malikstudios.backtune.R
 import com.malikstudios.backtune.ui.theme.BackTuneColors
 import com.malikstudios.backtune.ui.theme.BackTuneTheme
+import com.malikstudios.backtune.utils.AppPreferences
 import com.malikstudios.backtune.utils.Constants
 
 /**
@@ -37,7 +38,7 @@ fun HomeScreen(
     onNavigateToPlayer: (String) -> Unit,
     onNavigateToAbout: () -> Unit
 ) {
-    var videoUrl by remember { mutableStateOf("") }
+    var videoUrl by remember { mutableStateOf(AppPreferences.previousSavedYtUrl?: "") }
     var showError by remember { mutableStateOf(false) }
     
     Column(

@@ -16,6 +16,7 @@ import com.malikstudios.backtune.screens.AboutScreen
 import com.malikstudios.backtune.screens.HomeScreen
 import com.malikstudios.backtune.screens.PlayerScreen
 import com.malikstudios.backtune.screens.SoundSelectionScreen
+import com.malikstudios.backtune.utils.AppPreferences
 import com.malikstudios.backtune.viewmodels.MainViewModel
 import com.malikstudios.backtune.viewmodels.SharedIntentViewModel
 
@@ -52,6 +53,8 @@ fun AppNavigation(
             HomeScreen(
                 paddingValues = paddingValues,
                 onNavigateToPlayer = { videoId ->
+                    //store the url for next session
+                    AppPreferences.previousSavedYtUrl = videoId
                     navController.navigate(Screen.Player.createRoute(videoId))
                 },
                 onNavigateToAbout = {
@@ -73,7 +76,10 @@ fun AppNavigation(
             if (videoId != null) {
                 PlayerScreen(
                     videoId = videoId,
-                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateBack = {
+                        AppPreferences.previousSavedYtUrl = null // Clear the saved URL when navigating back
+                        navController.popBackStack()
+                    },
                     selectedSound = selectedSound,
                     volume = volume,
                     isBackgroundPlaying = isBackgroundPlaying,

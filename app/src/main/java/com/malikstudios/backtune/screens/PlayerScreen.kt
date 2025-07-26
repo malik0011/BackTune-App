@@ -129,13 +129,14 @@ fun PlayerScreen(
             .background(BackTuneColors.Background)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
-//            if(!isBlubOn) {
-                androidx.compose.animation.AnimatedVisibility(
-                    visible = !isBlubOn,
-                    enter = fadeIn(animationSpec = tween(500)),
-                    exit = fadeOut(animationSpec = tween(500)),
-                    modifier = Modifier.fillMaxSize().zIndex(10f)
-                ) {
+
+            // Animated overlay for blob icon
+            androidx.compose.animation.AnimatedVisibility(
+                visible = !isBlubOn,
+                enter = fadeIn(animationSpec = tween(500)),
+                exit = fadeOut(animationSpec = tween(500)),
+                modifier = Modifier.fillMaxSize().zIndex(10f)
+            ) {
                     Box(modifier = Modifier
 //                        .zIndex(10f)
                         .fillMaxSize()
@@ -166,7 +167,6 @@ fun PlayerScreen(
                     }
                 }
 
-//            }
             Column {
                 // Top Bar
                 TopAppBar(

@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Intent
 import android.util.Log
 import com.google.firebase.FirebaseApp
+import com.malikstudios.backtune.utils.AppPreferences
 import com.malikstudios.backtune.utils.LogUtils
 import com.onesignal.OneSignal
 import com.onesignal.debug.LogLevel
@@ -16,6 +17,9 @@ import dagger.hilt.android.HiltAndroidApp
 class BackTuneApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        // Initialize SharedPreferences
+        AppPreferences.init(this)
+
         // Initialize Firebase
         FirebaseApp.initializeApp(this)
 
