@@ -76,6 +76,8 @@ dependencies {
     implementation(libs.androidx.material3)
 
     implementation("androidx.room:room-runtime:2.6.1")
+    implementation(libs.play.services.measurement.api)
+    implementation(libs.firebase.analytics)
     kapt("androidx.room:room-compiler:2.6.1")
 
     // Firebase

@@ -2,8 +2,8 @@ package com.malikstudios.backtune
 
 import android.app.Application
 import android.content.Intent
-import android.util.Log
 import com.google.firebase.FirebaseApp
+import com.malikstudios.backtune.utils.AnalyticsTracker
 import com.malikstudios.backtune.utils.AppPreferences
 import com.malikstudios.backtune.utils.LogUtils
 import com.onesignal.OneSignal
@@ -22,6 +22,9 @@ class BackTuneApplication : Application() {
 
         // Initialize Firebase
         FirebaseApp.initializeApp(this)
+
+        // Initialize Analytics Tracker
+        AnalyticsTracker.init(this)
 
         val apiKey = BuildConfig.MY_SECRET_API_KEY
         // Initialize OneSignal
