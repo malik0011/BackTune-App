@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.malikstudios.backtune.R
+import com.malikstudios.backtune.db.entity.YoutubeData
 import com.malikstudios.backtune.ui.theme.BackTuneColors
 import com.malikstudios.backtune.ui.theme.BackTuneTheme
 import com.malikstudios.backtune.utils.AppPreferences
@@ -35,6 +36,7 @@ import com.malikstudios.backtune.utils.Constants
 @Composable
 fun HomeScreen(
     paddingValues: PaddingValues,
+    previousUrlList: List<YoutubeData>,
     onNavigateToPlayer: (String) -> Unit,
     onNavigateToAbout: () -> Unit
 ) {
@@ -169,6 +171,46 @@ fun HomeScreen(
             )
         }
 
+        previousUrlList.forEach { video ->
+            // Previous Video Card
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+                    .clickable {
+                        onNavigateToPlayer(video.videoId)
+                    },
+                colors = CardDefaults.cardColors(
+                    containerColor = BackTuneColors.CardBackground
+                ),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    // Thumbnail
+//                    Image(
+//                        painter = painterResource(id = R.drawable.ic_youtube_thumbnail_placeholder), // Placeholder
+//                        contentDescription = "Video Thumbnail",
+//                        modifier = Modifier
+//                            .size(64.dp)
+//                            .clip(RoundedCornerShape(8.dp))
+//                    )
+
+                    // Video Title
+                    Text(
+                        text = video.title,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = BackTuneColors.TextPrimary,
+                        maxLines = 2,
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+            }
+        }
+
         Spacer(modifier = Modifier.weight(1f))
 
         // About Button
@@ -208,6 +250,9 @@ fun HomeScreenPreview() {
     BackTuneTheme {
         HomeScreen(
             paddingValues = PaddingValues(16.dp),
+            previousUrlList = listOf(
+                YoutubeData(videoId = "dQw4w9WgXcQ", title = "Sample Video", thumbnail = "https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg")
+            ),
             onNavigateToPlayer = {},
             onNavigateToAbout = {}
         )

@@ -7,8 +7,8 @@ plugins {
     alias(libs.plugins.google.firebase.crashlytics) apply false
 }
 
-configurations.all {
-    resolutionStrategy {
-        force("com.squareup:javapoet:1.13.0")
-    }
-}
+//configurations.all {
+//    resolutionStrategy {
+//        force("com.squareup:javapoet:1.13.0")
+//    }
+//}

@@ -1,4 +1,4 @@
-package com.malikstudios.backtune.screens
+package com.malikstudios.backtune.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -55,4 +55,4 @@ class PlayerViewModel @Inject constructor(
         super.onCleared()
         soundService.release()
     }
-} 
+}

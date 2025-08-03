@@ -17,6 +17,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.malikstudios.backtune.navigation.AppNavigation
 import com.malikstudios.backtune.ui.theme.BackTuneTheme
 import com.malikstudios.backtune.utils.AnalyticsTracker
+import com.malikstudios.backtune.utils.AppPreferences
 import com.malikstudios.backtune.utils.PermissionHandler
 import com.malikstudios.backtune.viewmodels.SharedIntentViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -97,6 +98,7 @@ class MainActivity : ComponentActivity() {
             if (sharedText != null && isValidYouTubeUrl(sharedText)) {
                 val videoId = extractVideoId(sharedText)
                 if (videoId != null) {
+                    AppPreferences.previousSavedYtUrl = videoId
                     sharedIntentViewModel.setSharedVideoId(videoId)
                 }
             }
@@ -115,6 +117,7 @@ class MainActivity : ComponentActivity() {
             if (isValidYouTubeUrl(ytLink)) {
                 val videoId = extractVideoId(ytLink)
                 if (videoId != null) {
+                    AppPreferences.previousSavedYtUrl = videoId
                     sharedIntentViewModel.setSharedVideoId(videoId)
                 }
             } else {

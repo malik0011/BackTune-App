@@ -1,9 +1,17 @@
 package com.malikstudios.backtune.db.entity
 
-data class YoutubeUrlData(
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import java.util.UUID
+
+
+@Entity(tableName = "youtube_data")
+data class YoutubeData(
+    @PrimaryKey val id: String = UUID.randomUUID().toString(),
     val videoId: String ="",
     val title: String = "",
-    val thumbnailUrl: String = "",
-    val channelName: String = "",
-    val currentTimeStamp: String? = "", // Duration in ISO 8601 format (e.g., PT2M34S)
+    val thumbnail: String = "",        // Can be URL or local path
+    val createdAt: Long = System.currentTimeMillis(),          // Time added to DB (System.currentTimeMillis())
+    val lastWatched: Long? = null, // Nullable if never watched
+    val currentTimeStamp: String = "", // Duration in ISO 8601 format (e.g., PT2M34S)
 ) : java.io.Serializable

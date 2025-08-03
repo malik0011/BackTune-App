@@ -1,5 +1,6 @@
 package com.malikstudios.backtune.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,6 +20,7 @@ import com.malikstudios.backtune.screens.SoundSelectionScreen
 import com.malikstudios.backtune.utils.AppPreferences
 import com.malikstudios.backtune.viewmodels.MainViewModel
 import com.malikstudios.backtune.viewmodels.SharedIntentViewModel
+import com.malikstudios.backtune.viewmodels.YouTubeViewModel
 
 /**
  * Navigation routes for the app
@@ -44,6 +46,15 @@ fun AppNavigation(
     val sharedVideoId by sharedIntentViewModel.sharedVideoId.collectAsState()
     val creatorImageUrl by sharedIntentViewModel.creatorImageUrl.collectAsState()
     val appShareableURL by sharedIntentViewModel.appShareableURL.collectAsState()
+    val youTubeViewModel : YouTubeViewModel = hiltViewModel()
+    val allVideos by youTubeViewModel.allVideos.collectAsState()
+
+    LaunchedEffect(allVideos) {
+        allVideos.forEach { video ->
+            // Update watch time for each video
+            Log.d("testAyanDb", "AppNavigation-data: $video videos loaded")
+        }
+    }
 
     NavHost(
         navController = navController,
@@ -52,6 +63,7 @@ fun AppNavigation(
         composable(Screen.Home.route) {
             HomeScreen(
                 paddingValues = paddingValues,
+                previousUrlList = allVideos,
                 onNavigateToPlayer = { videoId ->
                     //store the url for next session
                     AppPreferences.previousSavedYtUrl = videoId
@@ -72,6 +84,14 @@ fun AppNavigation(
             val isSoundSelectionVisible by viewModel.isSoundSelectionVisible.collectAsStateWithLifecycle()
             val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
             val isBlubOn by viewModel.isBlubOn.collectAsStateWithLifecycle()
+
+            LaunchedEffect(Unit) {
+                videoId?.let {
+                    youTubeViewModel.addYoutubeUrl(it) // Update watch time for the video
+                    // Save the current video ID for next session
+                    AppPreferences.previousSavedYtUrl = it
+                }
+            }
 
             if (videoId != null) {
                 PlayerScreen(

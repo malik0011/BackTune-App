@@ -36,5 +36,10 @@ object AppPreferences {
 
     var previousSavedYtUrl: String?
         get() = preferences.getString("previous_saved_yt_url", null)
-        set(value) = preferences.edit { putString("previous_saved_yt_url", "https://youtu.be/$value") }
+        set(value) = preferences.edit {
+            putString(
+                "previous_saved_yt_url",
+                if (value != null) "https://youtu.be/$value" else null
+            )
+        }
 }
