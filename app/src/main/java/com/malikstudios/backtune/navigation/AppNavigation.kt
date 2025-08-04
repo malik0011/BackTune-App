@@ -86,6 +86,7 @@ fun AppNavigation(
             val isBlubOn by viewModel.isBlubOn.collectAsStateWithLifecycle()
 
             LaunchedEffect(Unit) {
+                Log.d("testAyan", "AppNavigation: ${videoId} videoId received in PlayerScreen")
                 videoId?.let {
                     youTubeViewModel.addYoutubeUrl(it) // Update watch time for the video
                     // Save the current video ID for next session

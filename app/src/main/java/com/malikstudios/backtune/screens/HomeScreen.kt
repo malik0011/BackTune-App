@@ -2,31 +2,52 @@ package com.malikstudios.backtune.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material3.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuDefaults.outlinedTextFieldColors
-import androidx.compose.runtime.*
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.malikstudios.backtune.R
 import com.malikstudios.backtune.db.entity.YoutubeData
+import com.malikstudios.backtune.screens.home.HomeTopBar
+import com.malikstudios.backtune.screens.home.PreviousVideoTicketCard2
 import com.malikstudios.backtune.ui.theme.BackTuneColors
 import com.malikstudios.backtune.ui.theme.BackTuneTheme
-import com.malikstudios.backtune.utils.AppPreferences
 import com.malikstudios.backtune.utils.Constants
 
 /**
@@ -40,195 +61,172 @@ fun HomeScreen(
     onNavigateToPlayer: (String) -> Unit,
     onNavigateToAbout: () -> Unit
 ) {
-    var videoUrl by remember { mutableStateOf(AppPreferences.previousSavedYtUrl?: "") }
+    var videoUrl by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
-    
+
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BackTuneColors.Background)
-            .padding(16.dp)
-            .padding(paddingValues)
-        ,
-        horizontalAlignment = Alignment.CenterHorizontally
+        Modifier
+        .fillMaxSize()
+        .background(BackTuneColors.Background)
+        .verticalScroll(rememberScrollState())
     ) {
-        // Logo and Title Section
+        HomeTopBar(
+            onAboutClick = onNavigateToAbout,
+            onSettingsClick = { /* TODO: Implement settings navigation */ }
+        )
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 32.dp),
+                //.fillMaxSize()
+                .background(BackTuneColors.Background)
+                .padding(12.dp)
+                .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // App Logo
-            Image(
-                painter = painterResource(id = R.drawable.ic_backtune_logo),
-                contentDescription = "BackTune Logo",
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-            )
-            
-            Text(
-                text = stringResource(R.string.home_subtitle),
-                style = MaterialTheme.typography.bodyLarge,
-                color = BackTuneColors.TextSecondary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(top = 8.dp).clickable {
-                    throw RuntimeException("Test Crash") // Force a crash
-                }
-            )
-        }
-        
-        Spacer(modifier = Modifier.height(32.dp))
-        
-        // URL Input Card
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(
-                    elevation = 4.dp,
-                    shape = RoundedCornerShape(16.dp)
-                ),
-            colors = CardDefaults.cardColors(
-                containerColor = BackTuneColors.CardBackground
-            ),
-            shape = RoundedCornerShape(16.dp)
-        ) {
+            // Logo and Title Section
             Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = stringResource(R.string.youtube_url_hint),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = BackTuneColors.TextPrimary
+                // App Logo
+                Image(
+                    painter = painterResource(id = R.drawable.ic_backtune_logo),
+                    contentDescription = "BackTune Logo",
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clip(CircleShape)
                 )
-                
-                OutlinedTextField(
-                    value = videoUrl,
-                    onValueChange = { 
-                        videoUrl = it
-                        showError = false
-                    },
-                    isError = showError,
-                    supportingText = {
-                        if (showError) {
-                            Text(
-                                text = stringResource(R.string.error_invalid_url),
-                                color = BackTuneColors.AccentRed
-                            )
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = outlinedTextFieldColors(
-                        focusedBorderColor = BackTuneColors.Primary,
-                        unfocusedBorderColor = BackTuneColors.TextTertiary,
-                        cursorColor = BackTuneColors.Primary,
-                        focusedLabelColor = BackTuneColors.Primary,
-                        unfocusedLabelColor = BackTuneColors.TextSecondary,
+
+                Text(
+                    text = stringResource(R.string.home_subtitle),
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = 14.sp
                     ),
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(
-                        color = BackTuneColors.TextPrimary
-                    ),
-                    shape = RoundedCornerShape(12.dp)
+                    color = BackTuneColors.TextSecondary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 8.dp)
                 )
             }
-        }
 
-        Spacer(modifier = Modifier.height(32.dp))
-        
+            Spacer(modifier = Modifier.height(32.dp))
 
-        
-        // Play Button
-        Button(
-            onClick = {
-                if (videoUrl.matches(Regex(Constants.YOUTUBE_URL_PATTERN))) {
-                    // Extract video ID from URL
-                    val videoId = extractVideoId(videoUrl)
-                    if (videoId != null) {
-                        onNavigateToPlayer(videoId)
-                    } else {
-                        showError = true
-                    }
-                } else {
-                    showError = true
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 40.dp)
-                .height(56.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = BackTuneColors.Primary
-            ),
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.play_button),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.SemiBold
-                )
-            )
-        }
-
-        previousUrlList.forEach { video ->
-            // Previous Video Card
+            // URL Input Card
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-                    .clickable {
-                        onNavigateToPlayer(video.videoId)
-                    },
+                    .shadow(
+                        elevation = 4.dp,
+                        shape = RoundedCornerShape(16.dp)
+                    ),
                 colors = CardDefaults.cardColors(
                     containerColor = BackTuneColors.CardBackground
                 ),
                 shape = RoundedCornerShape(16.dp)
             ) {
-                Row(
+                Column(
                     modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // Thumbnail
-//                    Image(
-//                        painter = painterResource(id = R.drawable.ic_youtube_thumbnail_placeholder), // Placeholder
-//                        contentDescription = "Video Thumbnail",
-//                        modifier = Modifier
-//                            .size(64.dp)
-//                            .clip(RoundedCornerShape(8.dp))
-//                    )
-
-                    // Video Title
                     Text(
-                        text = video.title,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = BackTuneColors.TextPrimary,
-                        maxLines = 2,
-                        modifier = Modifier.weight(1f)
+                        text = stringResource(R.string.youtube_url_hint),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = BackTuneColors.TextPrimary
+                    )
+
+                    OutlinedTextField(
+                        value = videoUrl,
+                        onValueChange = {
+                            videoUrl = it
+                            showError = false
+                        },
+                        isError = showError,
+                        supportingText = {
+                            if (showError) {
+                                Text(
+                                    text = stringResource(R.string.error_invalid_url),
+                                    color = BackTuneColors.AccentRed
+                                )
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = outlinedTextFieldColors(
+                            focusedBorderColor = BackTuneColors.Primary,
+                            unfocusedBorderColor = BackTuneColors.TextTertiary,
+                            cursorColor = BackTuneColors.Primary,
+                            focusedLabelColor = BackTuneColors.Primary,
+                            unfocusedLabelColor = BackTuneColors.TextSecondary,
+                        ),
+                        textStyle = MaterialTheme.typography.bodyLarge.copy(
+                            color = BackTuneColors.TextPrimary
+                        ),
+                        shape = RoundedCornerShape(12.dp)
                     )
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(32.dp))
 
-        // About Button
-        Button(
-            onClick = onNavigateToAbout,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = BackTuneColors.Primary
-            ),
-            shape = RoundedCornerShape(24.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Info,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(20.dp)
+
+
+            // Play Button
+            Button(
+                onClick = {
+                    if (videoUrl.matches(Regex(Constants.YOUTUBE_URL_PATTERN))) {
+                        // Extract video ID from URL
+                        val videoId = extractVideoId(videoUrl)
+                        if (videoId != null) {
+                            onNavigateToPlayer(videoId)
+                        } else {
+                            showError = true
+                        }
+                    } else {
+                        showError = true
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 40.dp)
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = BackTuneColors.Primary
+                ),
+                shape = RoundedCornerShape(16.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.play_button),
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+            }
+
+            HorizontalDivider(
+                Modifier
+                    .fillMaxSize()
+                    .padding(top = 8.dp)
+                    .scale(scaleX = 1f, scaleY =  1f),
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("About BackTune")
+
+            Text(
+                text = stringResource(R.string.previous_videos),
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = BackTuneColors.TextPrimary,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                ),
+                textAlign = TextAlign.Start,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp, )
+            )
+
+            previousUrlList.forEach { video ->
+                PreviousVideoTicketCard2(
+                    video = video,
+                    onClick = {
+                        onNavigateToPlayer(video.videoId)
+                    }
+                )
+            }
         }
     }
 }

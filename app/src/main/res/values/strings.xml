@@ -40,4 +40,6 @@
     <string name="contact_me">Contact Me</string>
     <string name="share_app">Share BackTune</string>
     <string name="how_to_use">How to Use</string>
+
+    <string name="previous_videos">Previous videos</string>
 </resources>

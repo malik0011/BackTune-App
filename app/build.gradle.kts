@@ -92,6 +92,9 @@ dependencies {
     implementation(libs.play.services.measurement.api)
     // Hilt (Dependency Injection)
     implementation("com.google.dagger:hilt-android:2.57")
+    implementation(libs.material3)
+    implementation(libs.ui.graphics)
+    implementation(libs.androidx.ui.geometry)
     kapt("com.google.dagger:hilt-compiler:2.57")
 
     // Room (Database)
@@ -127,4 +130,8 @@ dependencies {
 
     // YouTube, ExoPlayer, Material, Others
     implementation("com.squareup:javapoet:1.13.0")
+
+    // Gson for JSON parsing
+    implementation("com.google.code.gson:gson:2.8.8")
+    //https://www.youtube.com/oembed?url=https://youtu.be/1Co4cTcDTyQ?si=NXhjhUymGOhfl6ji&format=json
 }
