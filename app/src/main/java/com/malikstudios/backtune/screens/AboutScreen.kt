@@ -116,6 +116,8 @@ fun AboutScreen(
                     stringResource(id = R.string.feature_ambient_sounds),
                     stringResource(id = R.string.feature_volume_control),
                     stringResource(id = R.string.feature_multiple_sounds),
+                    stringResource(id = R.string.feature_previous_videos_list),
+                    stringResource(id = R.string.feature_black_lock_screen),
                     stringResource(id = R.string.feature_easy_sharing)
                 )
             )

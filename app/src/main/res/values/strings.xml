@@ -33,6 +33,8 @@
     <string name="feature_volume_control">Customize background sound volume</string>
     <string name="feature_multiple_sounds">Multiple ambient sound options</string>
     <string name="feature_easy_sharing">Easy sharing from YouTube app</string>
+    <string name="feature_black_lock_screen">Lock the player screen with a black overlay to avoid accidental touches</string>
+    <string name="feature_previous_videos_list">Quick access to your last 5 videos</string>
 
     <!-- Feedback -->
     <string name="feedback_title">Feedback</string>
