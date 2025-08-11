@@ -42,14 +42,14 @@ fun HomeTopBar(
                 Icon(
                     imageVector = Icons.Default.Info,
                     contentDescription = "About",
-                    tint = BackTuneColors.Surface.copy(alpha = 0.5f)
+                    tint = BackTuneColors.TextSecondary
                 )
             }
             IconButton(onClick = onSettingsClick) {
                 Icon(
                     painter = painterResource(id = com.malikstudios.backtune.R.drawable.ic_settings), // create this icon
                     contentDescription = "Settings",
-                    tint = BackTuneColors.Surface.copy(alpha = 0.5f)
+                    tint = BackTuneColors.TextSecondary
                 )
             }
         }

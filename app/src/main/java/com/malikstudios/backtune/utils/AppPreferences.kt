@@ -42,4 +42,13 @@ object AppPreferences {
                 if (value != null) "https://youtu.be/$value" else null
             )
         }
+
+    // Settings
+    var showPreviousVideos: Boolean
+        get() = preferences.getBoolean("show_previous_videos", true)
+        set(value) = preferences.edit { putBoolean("show_previous_videos", value) }
+
+    var lockScreenType: String
+        get() = preferences.getString("lock_screen_type", "none") ?: "none"
+        set(value) = preferences.edit { putString("lock_screen_type", value) }
 }

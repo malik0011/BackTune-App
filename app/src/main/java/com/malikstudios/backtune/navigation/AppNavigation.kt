@@ -16,6 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import com.malikstudios.backtune.screens.AboutScreen
 import com.malikstudios.backtune.screens.HomeScreen
 import com.malikstudios.backtune.screens.PlayerScreen
+import com.malikstudios.backtune.screens.SettingScreen
 import com.malikstudios.backtune.screens.SoundSelectionScreen
 import com.malikstudios.backtune.utils.AppPreferences
 import com.malikstudios.backtune.viewmodels.MainViewModel
@@ -31,6 +32,7 @@ sealed class Screen(val route: String) {
         fun createRoute(videoId: String) = "player/$videoId"
     }
     data object SoundSelection : Screen("sound_selection")
+    data object Settings : Screen("settings")
     data object About : Screen("about")
 }
 
@@ -69,9 +71,8 @@ fun AppNavigation(
                     AppPreferences.previousSavedYtUrl = videoId
                     navController.navigate(Screen.Player.createRoute(videoId))
                 },
-                onNavigateToAbout = {
-                    navController.navigate(Screen.About.route)
-                }
+                onNavigateToAbout = { navController.navigate(Screen.About.route) },
+                onNavigateToSettings = { navController.navigate(Screen.Settings.route) }
             )
         }
 
@@ -144,6 +145,14 @@ fun AppNavigation(
                 },
                 onContactMe = {
                     uriHandler.openUri("https://www.linkedin.com/in/ayan-malik-1302a3199/")
+                }
+            )
+        }
+
+        composable(Screen.Settings.route) {
+            SettingScreen(
+                onNavigateBack = {
+                    navController.popBackStack()
                 }
             )
         }

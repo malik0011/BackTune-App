@@ -49,6 +49,7 @@ import com.malikstudios.backtune.screens.home.PreviousVideoTicketCard2
 import com.malikstudios.backtune.ui.theme.BackTuneColors
 import com.malikstudios.backtune.ui.theme.BackTuneTheme
 import com.malikstudios.backtune.utils.Constants
+import com.malikstudios.backtune.utils.AppPreferences
 
 /**
  * Home screen of the app where users can enter a YouTube URL
@@ -59,7 +60,8 @@ fun HomeScreen(
     paddingValues: PaddingValues,
     previousUrlList: List<YoutubeData>,
     onNavigateToPlayer: (String) -> Unit,
-    onNavigateToAbout: () -> Unit
+    onNavigateToAbout: () -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
     var videoUrl by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
@@ -72,13 +74,13 @@ fun HomeScreen(
     ) {
         HomeTopBar(
             onAboutClick = onNavigateToAbout,
-            onSettingsClick = { /* TODO: Implement settings navigation */ }
+            onSettingsClick = onNavigateToSettings
         )
         Column(
             modifier = Modifier
                 //.fillMaxSize()
                 .background(BackTuneColors.Background)
-                .padding(12.dp)
+                .padding(horizontal = 12.dp)
                 .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -112,6 +114,7 @@ fun HomeScreen(
             // URL Input Card
             Card(
                 modifier = Modifier
+                    .padding(horizontal = 6.dp)
                     .fillMaxWidth()
                     .shadow(
                         elevation = 4.dp,
@@ -199,49 +202,53 @@ fun HomeScreen(
                 )
             }
 
-            HorizontalDivider(
-                Modifier
-                    .fillMaxSize()
-                    .padding(top = 8.dp)
-                    .scale(scaleX = 1f, scaleY =  1f),
-            )
+            Spacer(Modifier.height(24.dp))
 
-            Text(
-                text = stringResource(R.string.previous_videos),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = BackTuneColors.TextPrimary,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                ),
-                textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 24.dp)
-            )
-
-            val validVideos = previousUrlList.filter { it.videoId.isNotBlank() }
-
-            if (validVideos.isEmpty()) {
+            // Previous Videos Section
+            if (AppPreferences.showPreviousVideos) {
+                HorizontalDivider(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(top = 8.dp)
+                        .scale(scaleX = 1f, scaleY =  1f),
+                )
                 Text(
-                    text = "No history yet. Paste a YouTube link above to get started!",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = BackTuneColors.TextSecondary
+                    text = stringResource(R.string.previous_videos),
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = BackTuneColors.TextPrimary,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
                     ),
+                    textAlign = TextAlign.Start,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    textAlign = TextAlign.Center
+                        .padding(top = 24.dp)
                 )
-            } else {
-                validVideos.forEach { video ->
-                    PreviousVideoTicketCard2(
-                        video = video,
-                        onClick = {
-                            if (video.videoId.isNotBlank()) {
-                                onNavigateToPlayer(video.videoId)
-                            }
-                        }
+
+                val validVideos = previousUrlList.filter { it.videoId.isNotBlank() }
+
+                if (validVideos.isEmpty()) {
+                    Text(
+                        text = "No history yet. Paste a YouTube link above to get started!",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = BackTuneColors.TextSecondary
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        textAlign = TextAlign.Center
                     )
+                } else {
+                    validVideos.forEach { video ->
+                        PreviousVideoTicketCard2(
+                            video = video,
+                            onClick = {
+                                if (video.videoId.isNotBlank()) {
+                                    onNavigateToPlayer(video.videoId)
+                                }
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -269,7 +276,8 @@ fun HomeScreenPreview() {
                 YoutubeData(videoId = "dQw4w9WgXcQ", title = "Sample Video", thumbnail = "https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg")
             ),
             onNavigateToPlayer = {},
-            onNavigateToAbout = {}
+            onNavigateToAbout = {},
+            onNavigateToSettings = {}
         )
     }
 }
