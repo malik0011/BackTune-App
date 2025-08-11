@@ -49,14 +49,7 @@ fun AppNavigation(
     val creatorImageUrl by sharedIntentViewModel.creatorImageUrl.collectAsState()
     val appShareableURL by sharedIntentViewModel.appShareableURL.collectAsState()
     val youTubeViewModel : YouTubeViewModel = hiltViewModel()
-    val allVideos by youTubeViewModel.allVideos.collectAsState()
-
-    LaunchedEffect(allVideos) {
-        allVideos.forEach { video ->
-            // Update watch time for each video
-            Log.d("testAyanDb", "AppNavigation-data: $video videos loaded")
-        }
-    }
+    val recentVideos by youTubeViewModel.recentVideos.collectAsState()
 
     NavHost(
         navController = navController,
@@ -65,7 +58,7 @@ fun AppNavigation(
         composable(Screen.Home.route) {
             HomeScreen(
                 paddingValues = paddingValues,
-                previousUrlList = allVideos,
+                previousUrlList = recentVideos,
                 onNavigateToPlayer = { videoId ->
                     //store the url for next session
                     AppPreferences.previousSavedYtUrl = videoId

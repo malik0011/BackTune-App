@@ -25,6 +25,7 @@ class YouTubeViewModel @Inject constructor(
 ) : ViewModel() {
 
     val allVideos = repo.allVideos.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    val recentVideos = repo.recentVideos.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     fun updateWatchTime(id: String) {
         viewModelScope.launch {

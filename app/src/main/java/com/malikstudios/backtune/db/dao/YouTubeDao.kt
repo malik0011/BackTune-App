@@ -16,6 +16,9 @@ interface YouTubeDao {
     @Query("SELECT * FROM youtube_data WHERE videoId != '' ORDER BY COALESCE(lastWatched, createdAt) DESC")
     fun getAllVideos(): Flow<List<YoutubeData>>
 
+    @Query("SELECT * FROM youtube_data WHERE videoId != '' ORDER BY COALESCE(lastWatched, createdAt) DESC LIMIT 5")
+    fun getRecentVideos(): Flow<List<YoutubeData>>
+
     @Query("SELECT * FROM youtube_data WHERE id = :id")
     suspend fun getVideoById(id: String): YoutubeData?
 

@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class YouTubeDataRepository(private val dao: YouTubeDao) {
 
     val allVideos: Flow<List<YoutubeData>> = dao.getAllVideos()
+    val recentVideos: Flow<List<YoutubeData>> = dao.getRecentVideos()
 
     suspend fun insert(video: YoutubeData) = dao.insert(video)
 
