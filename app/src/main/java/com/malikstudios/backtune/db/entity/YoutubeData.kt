@@ -1,11 +1,15 @@
 package com.malikstudios.backtune.db.entity
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.UUID
 
 
-@Entity(tableName = "youtube_data")
+@Entity(
+    tableName = "youtube_data",
+    indices = [Index(value = ["videoId"], unique = true)]
+)
 data class YoutubeData(
     @PrimaryKey val id: String = UUID.randomUUID().toString(),
     val videoId: String ="",
