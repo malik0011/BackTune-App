@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.malikstudios.backtune.db.entity.YoutubeData
+import com.malikstudios.backtune.models.YoutubeInfo
 import com.malikstudios.backtune.repository.YouTubeDataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -32,31 +33,32 @@ class YouTubeViewModel @Inject constructor(
     }
 
     fun addYoutubeUrl(videoId: String) = viewModelScope.launch {
-        // Video already exists, no need to add
+        val now = System.currentTimeMillis()
+        // Cleanup any invalid rows opportunistically
+        repo.cleanupInvalid()
+        // If video does not exist, fetch info and insert
         if (!allVideos.value.any { it.videoId == videoId }) {
-            // Fetch video info from YouTube API
-            val data = viewModelScope.async {
-                getYoutubeUrlInfo(videoId)
-            }
-            val ytUrlInfo = data.await()
-            Log.d("testAyan", "addYoutubeUrl: $ytUrlInfo")
-            //update the data to db
-            ytUrlInfo?.let {
-                repo.insert(YoutubeData(
-                    videoId = it.videoId,
-                    title = it.title, // Placeholder, should be updated with actual title
-                    lastWatched = System.currentTimeMillis(),
+            val infoDeferred = viewModelScope.async { getYoutubeUrlInfo(videoId) }
+            val info = infoDeferred.await()
+            Log.d("testAyan", "addYoutubeUrl: $info")
+            repo.insert(
+                YoutubeData(
+                    videoId = videoId,
+                    title = info?.title ?: "",
+                    lastWatched = now,
                     currentTimeStamp = "0"
-                ))
-            }
-        }
-        else {
+                )
+            )
+        } else {
             Log.d("testAyan", "addYoutubeUrl: Video already exists, updating watch time for $videoId")
-            updateWatchTime(videoId)
+            val existing = allVideos.value.firstOrNull { it.videoId == videoId }
+            existing?.let { video ->
+                repo.updateLastWatched(video.id, now)
+            }
         }
     }
 
-    private suspend fun getYoutubeUrlInfo(videoId: String): YoutubeData? = withContext(Dispatchers.IO) {
+    private suspend fun getYoutubeUrlInfo(videoId: String): YoutubeInfo? = withContext(Dispatchers.IO) {
         try {
             val client = OkHttpClient()
             val request = Request.Builder()
@@ -71,7 +73,7 @@ class YouTubeViewModel @Inject constructor(
 
             if (response.isSuccessful) {
                 response.body?.string()?.let { json ->
-                    return@withContext parseJsonToYoutubeData(json)
+                    return@withContext parseJsonToYoutubeInfo(json)
                 }
             }
 
@@ -89,13 +91,8 @@ class YouTubeViewModel @Inject constructor(
 
 
 
-    private fun parseJsonToYoutubeData(json: String): YoutubeData {
-        // Implement your JSON parsing logic here
-        // This is a placeholder implementation
-        //cover json to obj using gson
-        // You can use Gson or any other JSON library to parse the JSON string
-        // For example, using Gson:
-         val gson = Gson()
-         return gson.fromJson(json, YoutubeData::class.java)
+    private fun parseJsonToYoutubeInfo(json: String): YoutubeInfo {
+        val gson = Gson()
+        return gson.fromJson(json, YoutubeInfo::class.java)
     }
 }

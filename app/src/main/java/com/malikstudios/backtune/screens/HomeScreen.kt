@@ -216,16 +216,33 @@ fun HomeScreen(
                 textAlign = TextAlign.Start,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 24.dp, )
+                    .padding(top = 24.dp)
             )
 
-            previousUrlList.forEach { video ->
-                PreviousVideoTicketCard2(
-                    video = video,
-                    onClick = {
-                        onNavigateToPlayer(video.videoId)
-                    }
+            val validVideos = previousUrlList.filter { it.videoId.isNotBlank() }
+
+            if (validVideos.isEmpty()) {
+                Text(
+                    text = "No history yet. Paste a YouTube link above to get started!",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = BackTuneColors.TextSecondary
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    textAlign = TextAlign.Center
                 )
+            } else {
+                validVideos.forEach { video ->
+                    PreviousVideoTicketCard2(
+                        video = video,
+                        onClick = {
+                            if (video.videoId.isNotBlank()) {
+                                onNavigateToPlayer(video.videoId)
+                            }
+                        }
+                    )
+                }
             }
         }
     }

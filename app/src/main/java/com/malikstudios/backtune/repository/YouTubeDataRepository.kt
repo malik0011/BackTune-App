@@ -19,4 +19,6 @@ class YouTubeDataRepository(private val dao: YouTubeDao) {
     suspend fun delete(video: YoutubeData) = dao.delete(video)
 
     suspend fun clearAll() = dao.clearAll()
+
+    suspend fun cleanupInvalid() = dao.deleteInvalid()
 }

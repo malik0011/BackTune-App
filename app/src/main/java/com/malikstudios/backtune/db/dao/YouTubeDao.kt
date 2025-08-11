@@ -13,7 +13,7 @@ interface YouTubeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(videos: List<YoutubeData>)
 
-    @Query("SELECT * FROM youtube_data ORDER BY createdAt DESC")
+    @Query("SELECT * FROM youtube_data WHERE videoId != '' ORDER BY COALESCE(lastWatched, createdAt) DESC")
     fun getAllVideos(): Flow<List<YoutubeData>>
 
     @Query("SELECT * FROM youtube_data WHERE id = :id")
@@ -27,4 +27,7 @@ interface YouTubeDao {
 
     @Query("DELETE FROM youtube_data")
     suspend fun clearAll()
+
+    @Query("DELETE FROM youtube_data WHERE videoId = '' OR videoId IS NULL")
+    suspend fun deleteInvalid()
 }
